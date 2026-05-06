@@ -1,4 +1,4 @@
-import { CardType } from "./cardType";
+import { CardType } from "@/types";
 
 export const formatCardNumber = (value: string): string => {
   const digits = value.replace(/\D/g, "");
@@ -10,8 +10,16 @@ export const formatCardNumber = (value: string): string => {
   );
 };
 
+// export const formatExpiryDate = (value: string): string => {
+//   const clean = value.replace(/\D/g, "");
+//   return `${clean.slice(0, 2)}/${clean.slice(2, 4)}`;
+// };
+
 export const formatExpiryDate = (value: string): string => {
   const clean = value.replace(/\D/g, "");
+
+  if (clean.length <= 2) return clean;
+
   return `${clean.slice(0, 2)}/${clean.slice(2, 4)}`;
 };
 

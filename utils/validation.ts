@@ -1,4 +1,4 @@
-import { CardType } from "./cardType";
+import { CardType } from "@/types";
 
 const isCardExpired = (month: string, year: string): boolean => {
   const fullYear = parseInt("20" + year, 10);

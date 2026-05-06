@@ -1,5 +1,5 @@
 "use client";
-import { useForm, SubmitHandler, useWatch } from "react-hook-form";
+import { SubmitHandler, useWatch, UseFormReturn } from "react-hook-form";
 import {
   formatCardNumber,
   formatExpiryDate,
@@ -17,15 +17,17 @@ import {
   expiryDateRules,
   getCvvRules,
 } from "@/utils/validation";
-import { getCardType } from "@/utils/cardType";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { CardType, PaymentFormInputs } from "@/types";
 import { useAppSelector } from "@/store/hooks";
 
 import { usePaymentFlow } from "@/hooks/usePaymentFlow";
-
-export default function CardInput() {
-  const [cardType, setCardType] = useState<CardType>("unknown");
+type Props = {
+  form: UseFormReturn<PaymentFormInputs>;
+  cardType: CardType;
+};
+export default function CardInput({ cardType, form }: Props) {
+  // const [cardType, setCardType] = useState<CardType>("unknown");
   const { processPayment } = usePaymentFlow();
   const {
     register,
@@ -33,7 +35,7 @@ export default function CardInput() {
     formState: { errors },
     reset,
     control,
-  } = useForm<PaymentFormInputs>({ mode: "onChange" });
+  } = form;
   const currency = useWatch({ control, name: "currency" });
   const onSubmit: SubmitHandler<PaymentFormInputs> = async (data) => {
     await processPayment(data);
@@ -112,7 +114,7 @@ export default function CardInput() {
             ...cardNumberRules,
             onChange: (e) => {
               e.target.value = formatCardNumber(e.target.value);
-              setCardType(getCardType(e.target.value));
+              // setCardType(getCardType(e.target.value));
             },
           })}
           placeholder="0000 0000 0000 0000"
