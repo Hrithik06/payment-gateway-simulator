@@ -1,16 +1,7 @@
 import { PaymentStatus, Transaction } from "@/types";
+import { loadHistory } from "@/utils/localStorage";
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-
-const loadHistory = () => {
-  try {
-    const serializedHistory = localStorage.getItem("transactions");
-    if (serializedHistory === null) return undefined; // Let reducers handle initial state
-    return JSON.parse(serializedHistory);
-  } catch (err) {
-    return undefined;
-  }
-};
 
 interface PaymentState {
   transactionId: string | null;

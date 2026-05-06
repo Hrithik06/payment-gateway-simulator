@@ -17,34 +17,36 @@ import {
   expiryDateRules,
   getCvvRules,
 } from "@/utils/validation";
-import { CardType, getCardType } from "@/utils/cardType";
+import { getCardType } from "@/utils/cardType";
 import { useState } from "react";
-
-type Inputs = {
-  amount: string;
-  currency: string;
-  cardHolderName: string;
-  cardNumber: string;
-  cvv: string;
-  expiryDate: string;
-};
+import { CardType, PaymentFormInputs } from "@/types";
+import { useAppDispatch } from "@/store/hooks";
+import {
+  paymentFailure,
+  paymentSuccess,
+  paymentTimeout,
+  submitPayment,
+} from "@/store/paymentSlice";
 
 export default function CardInput() {
   const [cardType, setCardType] = useState<CardType>("unknown");
+  const dispatch = useAppDispatch();
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
     control,
-  } = useForm<Inputs>({ mode: "onChange" });
+  } = useForm<PaymentFormInputs>({ mode: "onChange" });
   const currency = useWatch({ control, name: "currency" });
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    const cardUUID = crypto.randomUUID();
-    const bodyData = { cardUUID, ...data };
+  const amount = useWatch({ control, name: "amount" });
+  const onSubmit: SubmitHandler<PaymentFormInputs> = async (data) => {
+    const transactionId = crypto.randomUUID();
+    const bodyData = { transactionId, ...data };
     const controller = new AbortController();
     const timerId = setTimeout(() => controller.abort(), 6000);
     try {
+      submitPayment({ transactionId });
       const response = await fetch("/api/pay", {
         method: "POST",
         headers: {
@@ -53,21 +55,25 @@ export default function CardInput() {
         body: JSON.stringify(bodyData),
         signal: controller.signal,
       });
-
       const result = await response.json();
-      console.log(result);
-      reset();
+      if (result.status === "success") {
+        dispatch(paymentSuccess({ amount, currency }));
+        reset();
+      }
+      if (result.status === "failed") {
+        const { reason } = result;
+        dispatch(paymentFailure({ amount, currency, reason }));
+      }
     } catch (error) {
       if (error instanceof Error) {
         if (error.name === "AbortError") {
           console.error("Request timed out");
-          //setStatus timeout
+          dispatch(paymentTimeout({ amount, currency }));
         }
       }
     } finally {
       clearTimeout(timerId); // Important: stop the timer
     }
-    //store caard data in redux store and transcation data in localStorage
   };
 
   return (

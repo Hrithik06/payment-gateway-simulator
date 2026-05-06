@@ -14,3 +14,12 @@ export type Transaction = {
   reason: string | null;
   timestamp: string;
 };
+export type CardType = "visa" | "mastercard" | "amex" | "discover" | "unknown";
+export type PaymentFormInputs = {
+  amount: string;
+  currency: string;
+  cardHolderName: string;
+  cardNumber: string;
+  cvv: string;
+  expiryDate: string;
+};
