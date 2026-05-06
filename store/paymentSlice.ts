@@ -1,25 +1,12 @@
-import { PaymentStatus, Transaction } from "@/types";
+import { Payload, PaymentState, Transaction } from "@/types";
 import { loadHistory } from "@/utils/localStorage";
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-interface PaymentState {
-  transactionId: string | null;
-  status: PaymentStatus;
-  attempt: number;
-  reason: string | null;
-  history: Transaction[];
-}
-
-interface Payload {
-  amount: string;
-  currency: string;
-  reason?: string;
-}
-
 const persistedHistory = loadHistory();
 const initialState = {
   transactionId: null,
+  lastFourDigits: null,
   status: "idle",
   attempt: 0,
   reason: null,
@@ -30,25 +17,28 @@ const paymentSlice = createSlice({
   name: "payment",
   initialState,
   reducers: {
-    submitPayment(state, action: PayloadAction<{ transactionId: string }>) {
+    submitPayment(
+      state,
+      action: PayloadAction<{ transactionId: string; lastFourDigits: string }>,
+    ) {
       state.transactionId = action.payload.transactionId;
+      state.lastFourDigits = action.payload.lastFourDigits;
       state.status = "processing";
     },
     paymentSuccess(state, action: PayloadAction<Payload>) {
       if (!state.transactionId) return;
       state.status = "success";
       const { amount, currency } = action.payload;
-      state.history = [
-        {
-          id: state.transactionId,
-          amount,
-          currency,
-          status: "success",
-          reason: null,
-          timestamp: new Date().toISOString(),
-        },
-        ...state.history,
-      ];
+      const transaction: Transaction = {
+        id: state.transactionId,
+        amount,
+        currency,
+        status: "success",
+        reason: null,
+        timestamp: new Date().toISOString(),
+      };
+
+      state.history = [transaction, ...state.history];
 
       localStorage.setItem("transactions", JSON.stringify(state.history));
     },
@@ -59,17 +49,16 @@ const paymentSlice = createSlice({
       state.reason = reason ?? "Unknown reason";
       state.attempt += 1;
       if (state.attempt >= 3) state.status = "locked";
-      state.history = [
-        {
-          id: state.transactionId,
-          amount,
-          currency,
-          status: "failed",
-          reason: state.reason,
-          timestamp: new Date().toISOString(),
-        },
-        ...state.history,
-      ];
+      const transaction: Transaction = {
+        id: state.transactionId,
+        amount,
+        currency,
+        status: "failed",
+        reason: state.reason,
+        timestamp: new Date().toISOString(),
+      };
+
+      state.history = [transaction, ...state.history];
 
       localStorage.setItem("transactions", JSON.stringify(state.history));
     },
@@ -79,17 +68,15 @@ const paymentSlice = createSlice({
       state.status = "timeout";
       state.attempt += 1;
       if (state.attempt >= 3) state.status = "locked";
-      state.history = [
-        {
-          id: state.transactionId,
-          amount,
-          currency,
-          status: "timeout",
-          reason: "Request timed out",
-          timestamp: new Date().toISOString(),
-        },
-        ...state.history,
-      ];
+      const transaction: Transaction = {
+        id: state.transactionId,
+        amount,
+        currency,
+        status: "timeout",
+        reason: "Request timed out",
+        timestamp: new Date().toISOString(),
+      };
+      state.history = [transaction, ...state.history];
 
       localStorage.setItem("transactions", JSON.stringify(state.history));
     },

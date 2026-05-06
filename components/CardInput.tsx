@@ -18,19 +18,15 @@ import {
   getCvvRules,
 } from "@/utils/validation";
 import { getCardType } from "@/utils/cardType";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CardType, PaymentFormInputs } from "@/types";
-import { useAppDispatch } from "@/store/hooks";
-import {
-  paymentFailure,
-  paymentSuccess,
-  paymentTimeout,
-  submitPayment,
-} from "@/store/paymentSlice";
+import { useAppSelector } from "@/store/hooks";
+
+import { usePaymentFlow } from "@/hooks/usePaymentFlow";
 
 export default function CardInput() {
   const [cardType, setCardType] = useState<CardType>("unknown");
-  const dispatch = useAppDispatch();
+  const { processPayment } = usePaymentFlow();
   const {
     register,
     handleSubmit,
@@ -39,45 +35,15 @@ export default function CardInput() {
     control,
   } = useForm<PaymentFormInputs>({ mode: "onChange" });
   const currency = useWatch({ control, name: "currency" });
-  const amount = useWatch({ control, name: "amount" });
   const onSubmit: SubmitHandler<PaymentFormInputs> = async (data) => {
-    const transactionId = crypto.randomUUID();
-    const bodyData = { transactionId, ...data };
-    const controller = new AbortController();
-    const timerId = setTimeout(() => controller.abort(), 6000);
-    try {
-      submitPayment({ transactionId });
-      const response = await fetch("/api/pay", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(bodyData),
-        signal: controller.signal,
-      });
-      const result = await response.json();
-      if (result.status === "success") {
-        dispatch(paymentSuccess({ amount, currency }));
-        reset();
-      }
-      if (result.status === "failed") {
-        const { reason } = result;
-        dispatch(paymentFailure({ amount, currency, reason }));
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        if (error.name === "AbortError") {
-          console.error("Request timed out");
-          dispatch(paymentTimeout({ amount, currency }));
-        }
-      }
-    } finally {
-      clearTimeout(timerId); // Important: stop the timer
-    }
+    await processPayment(data);
   };
+  const status = useAppSelector((store) => store.payment.status);
 
+  useEffect(() => {
+    if (status === "success") reset();
+  }, [status, reset]);
   return (
-    /* "handleSubmit" will validate your inputs before invoking "onSubmit" */
     <form
       onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col gap-2 border border-red-500 rounded-2xl p-4 bg-gray-500 text-black"
@@ -85,12 +51,20 @@ export default function CardInput() {
       <div className="flex flex-col p-2">
         <label htmlFor="amountId">Amount to Pay</label>
         <span className="flex">
-          <select id="currencyId" {...register("currency", currencyRules)}>
+          <label htmlFor="currencyId" className="sr-only">
+            Currency
+          </label>
+          <select
+            id="currencyId"
+            aria-describedby="currency-error"
+            {...register("currency", currencyRules)}
+          >
             <option value="INR">INR</option>
             <option value="USD">USD</option>
           </select>
           <input
             id="amountId"
+            aria-describedby="amount-error"
             {...register("amount", {
               ...amountRules,
               onChange: (e) => {
@@ -104,8 +78,17 @@ export default function CardInput() {
               e.target.value = stripAmountFormatting(e.target.value);
             }}
           />
-          {errors.amount && <span className="">⚠ {errors.amount.message}</span>}
         </span>
+        {errors.currency && (
+          <span id="currency-error" role="alert">
+            ⚠ {errors.currency.message}
+          </span>
+        )}
+        {errors.amount && (
+          <span id="amount-error" role="alert">
+            ⚠ {errors.amount.message}
+          </span>
+        )}
       </div>
       <div className="flex flex-col p-2">
         <label htmlFor="cardHolderNameId">Card Holder Name</label>
@@ -113,9 +96,12 @@ export default function CardInput() {
           id="cardHolderNameId"
           {...register("cardHolderName", cardHolderNameRules)}
           placeholder="Name on Card"
+          aria-describedby="cardName-error"
         />
         {errors.cardHolderName && (
-          <span className="">⚠ {errors.cardHolderName.message}</span>
+          <span id="cardName-error" role="alert">
+            ⚠ {errors.cardHolderName.message}
+          </span>
         )}
       </div>
       <div className="flex flex-col p-2">
@@ -126,15 +112,16 @@ export default function CardInput() {
             ...cardNumberRules,
             onChange: (e) => {
               e.target.value = formatCardNumber(e.target.value);
-              // const cardType = getCardType(e.target.value);
               setCardType(getCardType(e.target.value));
-              // use cardType to show badge in card preview
             },
           })}
           placeholder="0000 0000 0000 0000"
+          aria-describedby="cardNumber-error"
         />
         {errors.cardNumber && (
-          <span className="">⚠ {errors.cardNumber.message}</span>
+          <span id="cardNumber-error" role="alert">
+            ⚠ {errors.cardNumber.message}
+          </span>
         )}
       </div>
       <div className="flex flex-col p-2">
@@ -148,8 +135,13 @@ export default function CardInput() {
             },
           })}
           placeholder={cardType === "amex" ? "1234" : "123"}
+          aria-describedby="cvv-error"
         />
-        {errors.cvv && <span className="">⚠ {errors.cvv.message}</span>}
+        {errors.cvv && (
+          <span id="cvv-error" role="alert">
+            ⚠ {errors.cvv.message}
+          </span>
+        )}
       </div>
       <div className="flex flex-col p-2">
         <label htmlFor="expiryDateId">Expiry Date</label>
@@ -162,9 +154,12 @@ export default function CardInput() {
             },
           })}
           placeholder="MM/YY"
+          aria-describedby="expiryDate-error"
         />
         {errors.expiryDate && (
-          <span className="">⚠ {errors.expiryDate.message}</span>
+          <span id="expiryDate-error" role="alert">
+            ⚠ {errors.expiryDate.message}
+          </span>
         )}
       </div>
       <button type="submit">Pay</button>
