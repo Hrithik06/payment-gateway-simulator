@@ -111,6 +111,11 @@ const paymentSlice = createSlice({
   },
 });
 
-export const { paymentSuccess, paymentFailure, paymentTimeout, submitPayment } =
-  paymentSlice.actions;
+export const {
+  paymentSuccess,
+  paymentFailure,
+  paymentTimeout,
+  submitPayment,
+  resetPayment,
+} = paymentSlice.actions;
 export default paymentSlice.reducer;
