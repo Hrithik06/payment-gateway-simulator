@@ -43,34 +43,35 @@ export default function PaymentForm() {
   }, [status, reset]);
 
   return (
-    <div className="flex flex-col lg:flex-row gap-8 items-center lg:items-start ">
+    <div className="flex flex-col lg:flex-row lg:justify-center gap-8 items-center">
       <div className="order-1 lg:order-2 w-full max-w-sm">
         <CardPreview
-          cardNumber={watchedValues.cardNumber || "0000 0000 0000 0000"}
-          cardHolderName={watchedValues.cardHolderName || "John Doe"}
-          expiryDate={watchedValues.expiryDate || "01/99"}
+          cardNumber={watchedValues.cardNumber || ""}
+          cardHolderName={watchedValues.cardHolderName || ""}
+          expiryDate={watchedValues.expiryDate || ""}
           cardType={cardType}
         />
       </div>
-
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="order-2 lg:order-1 w-full max-w-md flex flex-col gap-4  rounded-2xl border border-zinc-800 p-6"
-      >
-        <CardInput
-          form={form}
-          cardType={cardType}
-          currency={watchedValues.currency || "INR"}
-        />
-
-        <button
-          type="submit"
-          disabled={!isValid || status === "processing"}
-          className="mx-auto w-10/12 rounded-lg bg-white px-10 py-3 text-black disabled:opacity-50"
+      <div className="order-2 lg:order-1 w-full max-w-md">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="flex flex-col gap-4 rounded-2xl border border-zinc-800 p-6"
         >
-          Pay Now
-        </button>
-      </form>
+          <CardInput
+            form={form}
+            cardType={cardType}
+            currency={watchedValues.currency || "INR"}
+          />
+
+          <button
+            type="submit"
+            disabled={!isValid || status === "processing"}
+            className="mx-auto w-10/12 rounded-lg bg-white px-10 py-3 text-black disabled:opacity-50"
+          >
+            Pay Now
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

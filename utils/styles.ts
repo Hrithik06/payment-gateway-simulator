@@ -1,7 +1,8 @@
 export const inputStyles =
   "w-full rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-3 text-white placeholder:text-zinc-500 outline-none focus:border-blue-500";
 
-export const labelStyles = "mb-2 text-base font-medium text-zinc-300";
+export const labelStyles =
+  "mb-2 text-sm lg:text-base font-medium text-zinc-300";
 
 export const errorStyles = "mt-1 text-sm text-red-400";
 
