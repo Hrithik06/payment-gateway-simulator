@@ -1,5 +1,5 @@
 "use client";
-import { SubmitHandler, useWatch, UseFormReturn } from "react-hook-form";
+import { UseFormReturn } from "react-hook-form";
 import {
   formatCardNumber,
   formatExpiryDate,
@@ -17,46 +17,37 @@ import {
   expiryDateRules,
   getCvvRules,
 } from "@/utils/validation";
-import { useEffect } from "react";
 import { CardType, PaymentFormInputs } from "@/types";
-import { useAppSelector } from "@/store/hooks";
-
-import { usePaymentFlow } from "@/hooks/usePaymentFlow";
+import {
+  inputStyles,
+  labelStyles,
+  errorStyles,
+  sectionStyles,
+  selectStyles,
+} from "@/utils/styles";
 type Props = {
   form: UseFormReturn<PaymentFormInputs>;
   cardType: CardType;
+  currency: string;
 };
-export default function CardInput({ cardType, form }: Props) {
-  // const [cardType, setCardType] = useState<CardType>("unknown");
-  const { processPayment } = usePaymentFlow();
+export default function CardInput({ form, cardType, currency }: Props) {
   const {
     register,
-    handleSubmit,
     formState: { errors },
-    reset,
-    control,
   } = form;
-  const currency = useWatch({ control, name: "currency" });
-  const onSubmit: SubmitHandler<PaymentFormInputs> = async (data) => {
-    await processPayment(data);
-  };
-  const status = useAppSelector((store) => store.payment.status);
 
-  useEffect(() => {
-    if (status === "success") reset();
-  }, [status, reset]);
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col gap-2 border border-red-500 rounded-2xl p-4 bg-gray-500 text-black"
-    >
-      <div className="flex flex-col p-2">
-        <label htmlFor="amountId">Amount to Pay</label>
-        <span className="flex">
-          <label htmlFor="currencyId" className="sr-only">
+    <div>
+      <div className={sectionStyles}>
+        <label className={labelStyles} htmlFor="amountId">
+          Amount to Pay
+        </label>
+        <div className="flex gap-2">
+          <label className={labelStyles + " sr-only"} htmlFor="currencyId">
             Currency
           </label>
           <select
+            className={selectStyles}
             id="currencyId"
             aria-describedby="currency-error"
             {...register("currency", currencyRules)}
@@ -65,6 +56,7 @@ export default function CardInput({ cardType, form }: Props) {
             <option value="USD">USD</option>
           </select>
           <input
+            className={inputStyles}
             id="amountId"
             aria-describedby="amount-error"
             {...register("amount", {
@@ -80,35 +72,41 @@ export default function CardInput({ cardType, form }: Props) {
               e.target.value = stripAmountFormatting(e.target.value);
             }}
           />
-        </span>
+        </div>
         {errors.currency && (
-          <span id="currency-error" role="alert">
+          <span id="currency-error" role="alert" className={errorStyles}>
             ⚠ {errors.currency.message}
           </span>
         )}
         {errors.amount && (
-          <span id="amount-error" role="alert">
+          <span id="amount-error" role="alert" className={errorStyles}>
             ⚠ {errors.amount.message}
           </span>
         )}
       </div>
-      <div className="flex flex-col p-2">
-        <label htmlFor="cardHolderNameId">Card Holder Name</label>
+      <div className={sectionStyles}>
+        <label className={labelStyles} htmlFor="cardHolderNameId">
+          Card Holder Name
+        </label>
         <input
+          className={inputStyles}
           id="cardHolderNameId"
           {...register("cardHolderName", cardHolderNameRules)}
           placeholder="Name on Card"
           aria-describedby="cardName-error"
         />
         {errors.cardHolderName && (
-          <span id="cardName-error" role="alert">
+          <span id="cardName-error" role="alert" className={errorStyles}>
             ⚠ {errors.cardHolderName.message}
           </span>
         )}
       </div>
-      <div className="flex flex-col p-2">
-        <label htmlFor="cardNumberId">Card Number</label>
+      <div className={sectionStyles}>
+        <label className={labelStyles} htmlFor="cardNumberId">
+          Card Number
+        </label>
         <input
+          className={inputStyles}
           id="cardNumberId"
           {...register("cardNumber", {
             ...cardNumberRules,
@@ -121,14 +119,17 @@ export default function CardInput({ cardType, form }: Props) {
           aria-describedby="cardNumber-error"
         />
         {errors.cardNumber && (
-          <span id="cardNumber-error" role="alert">
+          <span id="cardNumber-error" role="alert" className={errorStyles}>
             ⚠ {errors.cardNumber.message}
           </span>
         )}
       </div>
-      <div className="flex flex-col p-2">
-        <label htmlFor="cvvId">CVV</label>
+      <div className={sectionStyles}>
+        <label className={labelStyles} htmlFor="cvvId">
+          CVV
+        </label>
         <input
+          className={inputStyles}
           id="cvvId"
           {...register("cvv", {
             ...getCvvRules(cardType),
@@ -140,14 +141,17 @@ export default function CardInput({ cardType, form }: Props) {
           aria-describedby="cvv-error"
         />
         {errors.cvv && (
-          <span id="cvv-error" role="alert">
+          <span id="cvv-error" role="alert" className={errorStyles}>
             ⚠ {errors.cvv.message}
           </span>
         )}
       </div>
-      <div className="flex flex-col p-2">
-        <label htmlFor="expiryDateId">Expiry Date</label>
+      <div className={sectionStyles}>
+        <label className={labelStyles} htmlFor="expiryDateId">
+          Expiry Date
+        </label>
         <input
+          className={inputStyles}
           id="expiryDateId"
           {...register("expiryDate", {
             ...expiryDateRules,
@@ -159,12 +163,11 @@ export default function CardInput({ cardType, form }: Props) {
           aria-describedby="expiryDate-error"
         />
         {errors.expiryDate && (
-          <span id="expiryDate-error" role="alert">
+          <span id="expiryDate-error" role="alert" className={errorStyles}>
             ⚠ {errors.expiryDate.message}
           </span>
         )}
       </div>
-      <button type="submit">Pay</button>
-    </form>
+    </div>
   );
 }

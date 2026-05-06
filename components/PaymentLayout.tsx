@@ -20,9 +20,7 @@ export default function PaymentLayout() {
       </header>
 
       <main className="flex-1 p-10">
-        <main className="flex-1 p-10">
-          <StatusScreen />
-        </main>
+        <StatusScreen />
       </main>
 
       <footer className="sticky bottom-0 w-full flex justify-between items-center p-6">
