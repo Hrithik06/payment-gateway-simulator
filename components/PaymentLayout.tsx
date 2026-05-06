@@ -15,7 +15,7 @@ export default function PaymentLayout() {
 
   return (
     <div className="min-h-screen flex flex-col bg-white dark:bg-zinc-950 ">
-      <header className="w-full border-b border-zinc-800 bg-zinc-950 px-6 py-4">
+      <header className="w-full border-b border-zinc-800 bg-zinc-950 px-16 py-6 flex justify-between">
         <Header />
       </header>
 
@@ -23,7 +23,7 @@ export default function PaymentLayout() {
         <StatusScreen />
       </main>
 
-      <footer className="w-full border-t border-zinc-800 bg-zinc-950 px-6 py-4">
+      <footer className="w-full border-t border-zinc-800 bg-zinc-950 px-16 py-6 flex justify-between">
         <Footer />
       </footer>
     </div>
