@@ -1,5 +1,5 @@
 "use client";
-import { UseFormReturn, UseFormSetValue } from "react-hook-form";
+import { UseFormReturn, UseFormSetValue, useWatch } from "react-hook-form";
 import {
   formatCardNumber,
   formatExpiryDate,
@@ -28,20 +28,17 @@ import {
 type Props = {
   form: UseFormReturn<PaymentFormInputs>;
   cardType: CardType;
-  currency: string;
-  setValue: UseFormSetValue<PaymentFormInputs>;
+  // currency: string;
+  // setValue: UseFormSetValue<PaymentFormInputs>;
 };
-export default function CardInput({
-  form,
-  cardType,
-  currency,
-  setValue,
-}: Props) {
+export default function CardInput({ form, cardType }: Props) {
   const {
     register,
     formState: { errors },
+    setValue,
+    control,
   } = form;
-
+  const currency = useWatch({ control, name: "currency" });
   return (
     <div>
       <div className={sectionStyles}>
@@ -75,7 +72,7 @@ export default function CardInput({
               },
               onBlur: (e) => {
                 // e.target.value = formatAmount(e.target.value, currency);
-                setValue("amount", formatAmount(e.target.value), {
+                setValue("amount", formatAmount(e.target.value, currency), {
                   shouldValidate: true,
                 });
               },

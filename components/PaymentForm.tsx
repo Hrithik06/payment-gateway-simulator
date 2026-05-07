@@ -9,10 +9,11 @@ import CardPreview from "./CardPreview";
 import { getCardType } from "@/utils/cardType";
 import { usePaymentFlow } from "@/hooks/usePaymentFlow";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppSelector } from "@/store/hooks";
 
 export default function PaymentForm() {
+  // const [mounted, setMounted] = useState(false);
   const form = useForm<PaymentFormInputs>({
     mode: "onChange",
   });
@@ -26,7 +27,6 @@ export default function PaymentForm() {
     reset,
     formState: { isValid, isDirty },
     control,
-    setValue,
   } = form;
 
   const watchedValues = useWatch({ control });
@@ -42,7 +42,9 @@ export default function PaymentForm() {
       reset();
     }
   }, [status, reset]);
-
+  // useEffect(() => {
+  //   setMounted(true);
+  // }, []);
   return (
     <div className="flex flex-col lg:flex-row lg:justify-center gap-8 items-center">
       <div className="order-1 lg:order-2 w-full max-w-sm">
@@ -57,18 +59,14 @@ export default function PaymentForm() {
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col gap-4 rounded-2xl border border-zinc-800 p-6"
+          autoComplete="off"
         >
-          <CardInput
-            form={form}
-            cardType={cardType}
-            currency={watchedValues.currency || "INR"}
-            setValue={setValue}
-          />
+          <CardInput form={form} cardType={cardType} />
 
           <button
             type="submit"
-            disabled={!isDirty || !isValid || status === "processing"}
-            className="mx-auto w-10/12 rounded-lg bg-white px-10 py-3 text-black disabled:opacity-50"
+            disabled={status === "processing"}
+            className="cursor-pointer mx-auto w-10/12 rounded-lg bg-white px-10 py-3 text-black disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Pay Now
           </button>

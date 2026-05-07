@@ -6,6 +6,8 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 const persistedHistory = loadHistory();
 const initialState = {
   transactionId: null,
+  currency: "INR",
+  amount: null,
   lastFourDigits: null,
   status: "idle",
   attempt: 0,
@@ -19,11 +21,18 @@ const paymentSlice = createSlice({
   reducers: {
     submitPayment(
       state,
-      action: PayloadAction<{ transactionId: string; lastFourDigits: string }>,
+      action: PayloadAction<{
+        transactionId: string;
+        lastFourDigits: string;
+        currency: string;
+        amount: string;
+      }>,
     ) {
       state.transactionId = action.payload.transactionId;
       state.lastFourDigits = action.payload.lastFourDigits;
       state.status = "processing";
+      state.currency = action.payload.currency;
+      state.amount = action.payload.amount;
     },
     paymentSuccess(state, action: PayloadAction<Payload>) {
       if (!state.transactionId) return;
@@ -80,6 +89,9 @@ const paymentSlice = createSlice({
 
       localStorage.setItem("transactions", JSON.stringify(state.history));
     },
+    retryPayment(state) {
+      state.status = "processing";
+    },
     resetPayment(state) {
       state.status = "idle";
       state.transactionId = null;
@@ -94,6 +106,7 @@ export const {
   paymentFailure,
   paymentTimeout,
   submitPayment,
+  retryPayment,
   resetPayment,
 } = paymentSlice.actions;
 export default paymentSlice.reducer;
