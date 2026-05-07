@@ -1,5 +1,5 @@
 "use client";
-import { UseFormReturn } from "react-hook-form";
+import { UseFormReturn, UseFormSetValue } from "react-hook-form";
 import {
   formatCardNumber,
   formatExpiryDate,
@@ -29,8 +29,14 @@ type Props = {
   form: UseFormReturn<PaymentFormInputs>;
   cardType: CardType;
   currency: string;
+  setValue: UseFormSetValue<PaymentFormInputs>;
 };
-export default function CardInput({ form, cardType, currency }: Props) {
+export default function CardInput({
+  form,
+  cardType,
+  currency,
+  setValue,
+}: Props) {
   const {
     register,
     formState: { errors },
@@ -62,10 +68,16 @@ export default function CardInput({ form, cardType, currency }: Props) {
             {...register("amount", {
               ...amountRules,
               onChange: (e) => {
-                e.target.value = formatRawAmount(e.target.value);
+                // e.target.value = formatRawAmount(e.target.value);
+                setValue("amount", formatRawAmount(e.target.value), {
+                  shouldValidate: true,
+                });
               },
               onBlur: (e) => {
-                e.target.value = formatAmount(e.target.value, currency);
+                // e.target.value = formatAmount(e.target.value, currency);
+                setValue("amount", formatAmount(e.target.value), {
+                  shouldValidate: true,
+                });
               },
             })}
             onFocus={(e) => {
@@ -111,8 +123,9 @@ export default function CardInput({ form, cardType, currency }: Props) {
           {...register("cardNumber", {
             ...cardNumberRules,
             onChange: (e) => {
-              e.target.value = formatCardNumber(e.target.value);
-              // setCardType(getCardType(e.target.value));
+              setValue("cardNumber", formatCardNumber(e.target.value), {
+                shouldValidate: true,
+              });
             },
           })}
           placeholder="0000 0000 0000 0000"
@@ -134,7 +147,10 @@ export default function CardInput({ form, cardType, currency }: Props) {
           {...register("cvv", {
             ...getCvvRules(cardType),
             onChange: (e) => {
-              e.target.value = formatCVV(e.target.value, cardType);
+              // e.target.value = formatCVV(e.target.value, cardType);
+              setValue("cvv", formatCVV(e.target.value, cardType), {
+                shouldValidate: true,
+              });
             },
           })}
           placeholder={cardType === "amex" ? "1234" : "123"}
@@ -156,7 +172,9 @@ export default function CardInput({ form, cardType, currency }: Props) {
           {...register("expiryDate", {
             ...expiryDateRules,
             onChange: (e) => {
-              e.target.value = formatExpiryDate(e.target.value);
+              setValue("expiryDate", formatExpiryDate(e.target.value), {
+                shouldValidate: true,
+              });
             },
           })}
           placeholder="MM/YY"

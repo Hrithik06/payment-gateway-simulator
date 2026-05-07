@@ -1,15 +1,19 @@
 import { CardType } from "@/types";
 
+// export const formatCardNumber = (value: string): string => {
+//   const digits = value.replace(/\D/g, "");
+//   return (
+//     digits
+//       .match(/.{1,4}/g)
+//       ?.join(" ")
+//       .substring(0, 19) || ""
+//   );
+// };
 export const formatCardNumber = (value: string): string => {
-  const digits = value.replace(/\D/g, "");
-  return (
-    digits
-      .match(/.{1,4}/g)
-      ?.join(" ")
-      .substring(0, 19) || ""
-  );
-};
+  const digits = value.replace(/\D/g, "").slice(0, 16);
 
+  return digits.match(/.{1,4}/g)?.join(" ") || "";
+};
 // export const formatExpiryDate = (value: string): string => {
 //   const clean = value.replace(/\D/g, "");
 //   return `${clean.slice(0, 2)}/${clean.slice(2, 4)}`;

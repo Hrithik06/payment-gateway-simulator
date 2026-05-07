@@ -24,8 +24,9 @@ export default function PaymentForm() {
   const {
     handleSubmit,
     reset,
-    formState: { isValid },
+    formState: { isValid, isDirty },
     control,
+    setValue,
   } = form;
 
   const watchedValues = useWatch({ control });
@@ -61,11 +62,12 @@ export default function PaymentForm() {
             form={form}
             cardType={cardType}
             currency={watchedValues.currency || "INR"}
+            setValue={setValue}
           />
 
           <button
             type="submit"
-            disabled={!isValid || status === "processing"}
+            disabled={!isDirty || !isValid || status === "processing"}
             className="mx-auto w-10/12 rounded-lg bg-white px-10 py-3 text-black disabled:opacity-50"
           >
             Pay Now
