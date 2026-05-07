@@ -7,9 +7,6 @@ import { ScrollText, CircleX } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function LockedScreen() {
-  // const { lastFourDigits, attempt, currency, amount } = useAppSelector(
-  //   (store) => store.payment,
-  // );
   const router = useRouter();
   const dispatch = useAppDispatch();
   return (
@@ -36,25 +33,7 @@ export default function LockedScreen() {
             </p>
           </div>
         </div>
-        {/*<div className="w-10/11 flex flex-col gap-4 ">
-          <div className="flex items-center justify-between gap-2">
-            <p className="shrink-0 text-zinc-400">Amount</p>
-            <p className="truncate text-right">{`${currency === "INR" ? "₹" : "$"} ${amount}`}</p>
-          </div>
-          <div className="flex items-center justify-between gap-2">
-            <p className="shrink-0 text-zinc-400">Trans ID</p>
 
-            <p className="truncate text-right">{transactionId}</p>
-          </div>
-        </div>*/}
-
-        {/*<button
-          className="cursor-pointer w-11/12 rounded-lg bg-black py-3 text-white flex gap-2 items-center justify-center text-sm lg:text-base"
-          onClick={handleRetry}
-        >
-          <span>Retry</span>
-          <RotateCcw size={16} />
-        </button>*/}
         <button
           className="cursor-pointer w-11/12 rounded-lg bg-green-600 hover:bg-green-500 py-3 text-white flex items-center justify-center text-sm lg:text-base"
           onClick={() => dispatch(resetPayment())}

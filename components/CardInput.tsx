@@ -28,8 +28,6 @@ import {
 type Props = {
   form: UseFormReturn<PaymentFormInputs>;
   cardType: CardType;
-  // currency: string;
-  // setValue: UseFormSetValue<PaymentFormInputs>;
 };
 export default function CardInput({ form, cardType }: Props) {
   const {
@@ -65,13 +63,11 @@ export default function CardInput({ form, cardType }: Props) {
             {...register("amount", {
               ...amountRules,
               onChange: (e) => {
-                // e.target.value = formatRawAmount(e.target.value);
                 setValue("amount", formatRawAmount(e.target.value), {
                   shouldValidate: true,
                 });
               },
               onBlur: (e) => {
-                // e.target.value = formatAmount(e.target.value, currency);
                 setValue("amount", formatAmount(e.target.value, currency), {
                   shouldValidate: true,
                 });
@@ -144,7 +140,6 @@ export default function CardInput({ form, cardType }: Props) {
           {...register("cvv", {
             ...getCvvRules(cardType),
             onChange: (e) => {
-              // e.target.value = formatCVV(e.target.value, cardType);
               setValue("cvv", formatCVV(e.target.value, cardType), {
                 shouldValidate: true,
               });

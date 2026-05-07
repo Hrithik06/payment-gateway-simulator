@@ -13,7 +13,6 @@ import { useEffect } from "react";
 import { useAppSelector } from "@/store/hooks";
 
 export default function PaymentForm() {
-  // const [mounted, setMounted] = useState(false);
   const form = useForm<PaymentFormInputs>({
     mode: "onChange",
   });
@@ -25,7 +24,7 @@ export default function PaymentForm() {
   const {
     handleSubmit,
     reset,
-    formState: { isValid, isDirty },
+    formState: { isValid },
     control,
   } = form;
 
@@ -42,9 +41,7 @@ export default function PaymentForm() {
       reset();
     }
   }, [status, reset]);
-  // useEffect(() => {
-  //   setMounted(true);
-  // }, []);
+
   return (
     <div className="flex flex-col lg:flex-row lg:justify-center gap-8 items-center">
       <div className="order-1 lg:order-2 w-full max-w-sm">
@@ -65,7 +62,7 @@ export default function PaymentForm() {
 
           <button
             type="submit"
-            disabled={status === "processing"}
+            disabled={status === "processing" || !isValid}
             className="cursor-pointer mx-auto w-10/12 rounded-lg bg-white px-10 py-3 text-black disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Pay Now

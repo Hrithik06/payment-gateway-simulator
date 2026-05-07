@@ -45,10 +45,10 @@ export default function SuccessScreen() {
           Make a New Payment
         </button>
         <button
-          className="cursor-pointer w-11/12 rounded-lg bg-blue-600 hover:bg-blue-500 text-white flex items-center justify-center text-sm lg:text-base"
+          className="cursor-pointer w-11/12 rounded-lg bg-blue-600 hover:bg-blue-500 py-3 text-white flex items-center gap-2 justify-center text-sm lg:text-base"
           onClick={() => router.push("/history")}
         >
-          <span>View Transaction</span>
+          <span>Transaction History</span>
           <ScrollText size={16} />
         </button>
       </div>

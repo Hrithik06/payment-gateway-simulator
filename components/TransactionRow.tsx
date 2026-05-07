@@ -6,7 +6,6 @@ export default function TransactionRow({
   transaction: Transaction;
 }) {
   const { id, amount, currency, status, timestamp } = transaction;
-
   const statusStyles = {
     success: "bg-green-500/20 text-green-400",
     failed: "bg-red-500/20 text-red-400",

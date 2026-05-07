@@ -1,12 +1,18 @@
 "use client";
-import { useAppSelector } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useState, useSyncExternalStore } from "react";
 import TransactionRow from "./TransactionRow";
+import { MoveLeft } from "lucide-react";
+import Link from "next/link";
+import { resetPayment } from "@/store/paymentSlice";
+import { useRouter } from "next/navigation";
 
 type Filter = "all" | "success" | "failed" | "timeout";
 
 export default function TransactionHistory() {
-  const history = useAppSelector((state) => state.payment.history);
+  const history = useAppSelector((store) => store.payment.history);
+  const dispatch = useAppDispatch();
+  const router = useRouter();
   const [filter, setFilter] = useState<Filter>("all");
   const [visibleCount, setVisibleCount] = useState(5);
 
@@ -20,9 +26,28 @@ export default function TransactionHistory() {
     () => false, //server snapshot return false not mounted
   );
   return (
-    <div className="max-w-2xl mx-auto flex flex-col gap-6">
+    <div className="max-w-2xl mx-auto flex flex-col gap-4 lg:gap-6">
+      <div className="flex justify-between items-center">
+        <Link href={"/"}>
+          <div className="flex gap-2 items-center">
+            <MoveLeft className="text-blue-300" size={16} />
+            <span className="text-sm lg:text-base">Back</span>
+          </div>
+        </Link>
+        <button
+          className="bg-green-600 rounded px-4 py-1.5 font-semibold cursor-pointer"
+          onClick={() => {
+            dispatch(resetPayment());
+            router.push("/");
+          }}
+        >
+          + New Payment
+        </button>
+      </div>
       <div>
-        <h1 className="text-2xl font-semibold text-white">Transactions</h1>
+        <h1 className="text-xl lg:text-2xl font-semibold text-white">
+          Transactions
+        </h1>
         <p className="text-sm text-zinc-400">Recent activity and status.</p>
       </div>
 
@@ -50,7 +75,7 @@ export default function TransactionHistory() {
       {mounted && (
         <div className="flex flex-col gap-3">
           {visible.map((t) => (
-            <TransactionRow key={t.id} transaction={t} />
+            <TransactionRow key={`${t.id}-${t.timestamp}`} transaction={t} />
           ))}
         </div>
       )}

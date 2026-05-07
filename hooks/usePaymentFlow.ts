@@ -31,7 +31,7 @@ export const usePaymentFlow = () => {
   const retryPayment = async () => {
     if (!transactionId || !amount || !currency) return;
     dispatch(retryPaymentAction());
-    await runPayment(transactionId, currency, amount);
+    await runPayment(transactionId, amount, currency);
   };
   const runPayment = async (
     txnId: string,
