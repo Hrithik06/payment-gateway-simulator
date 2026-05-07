@@ -22,10 +22,13 @@ export const cardHolderNameRules = {
   },
 };
 
-export const cardNumberRules = {
-  required: "Card Number is required",
-  minLength: { value: 19, message: "Invalid Card Number" },
-};
+export const getCardNumberRules = (cardType: CardType) => ({
+  required: "Card number is required",
+  minLength: {
+    value: cardType === "amex" ? 17 : 19, // 15+2 spaces vs 16+3 spaces
+    message: "Enter a valid card number",
+  },
+});
 
 export const getCvvRules = (cardType: CardType) => ({
   required: "CVV is required",

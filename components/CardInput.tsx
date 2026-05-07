@@ -16,6 +16,7 @@ import {
   currencyRules,
   expiryDateRules,
   getCvvRules,
+  getCardNumberRules,
 } from "@/utils/validation";
 import { CardType, PaymentFormInputs } from "@/types";
 import {
@@ -114,7 +115,7 @@ export default function CardInput({ form, cardType }: Props) {
           className={inputStyles}
           id="cardNumberId"
           {...register("cardNumber", {
-            ...cardNumberRules,
+            ...getCardNumberRules(cardType),
             onChange: (e) => {
               setValue("cardNumber", formatCardNumber(e.target.value), {
                 shouldValidate: true,
