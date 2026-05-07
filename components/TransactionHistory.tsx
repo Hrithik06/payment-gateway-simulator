@@ -35,7 +35,7 @@ export default function TransactionHistory() {
           </div>
         </Link>
         <button
-          className="bg-green-600 rounded px-4 py-1.5 font-semibold cursor-pointer"
+          className="bg-green-600 rounded px-2 lg:px-4 py-1.5 text-sm lg:text-base font-semibold cursor-pointer"
           onClick={() => {
             dispatch(resetPayment());
             router.push("/");
