@@ -1,5 +1,68 @@
 "use client";
+import { useAppSelector } from "@/store/hooks";
+import { useState, useSyncExternalStore } from "react";
+import TransactionRow from "./TransactionRow";
+
+type Filter = "all" | "success" | "failed" | "timeout";
 
 export default function TransactionHistory() {
-  return <div>TransactionHistory</div>;
+  const history = useAppSelector((state) => state.payment.history);
+  const [filter, setFilter] = useState<Filter>("all");
+  const [visibleCount, setVisibleCount] = useState(5);
+
+  const filtered =
+    filter === "all" ? history : history.filter((t) => t.status === filter);
+
+  const visible = filtered.slice(0, visibleCount);
+  const mounted = useSyncExternalStore(
+    () => () => {}, //no-op nothing to subscribe
+    () => true, //client always true mounted
+    () => false, //server snapshot return false not mounted
+  );
+  return (
+    <div className="max-w-2xl mx-auto flex flex-col gap-6">
+      <div>
+        <h1 className="text-2xl font-semibold text-white">Transactions</h1>
+        <p className="text-sm text-zinc-400">Recent activity and status.</p>
+      </div>
+
+      {/* filter pills */}
+      <div className="flex gap-2">
+        {(["all", "success", "failed", "timeout"] as Filter[]).map((f) => (
+          <button
+            key={f}
+            onClick={() => {
+              setFilter(f);
+              setVisibleCount(5);
+            }}
+            className={`px-4 py-1.5 rounded-full text-sm capitalize ${
+              filter === f
+                ? "bg-blue-600 text-white"
+                : "bg-zinc-800 text-zinc-400"
+            }`}
+          >
+            {f === "all" ? "All" : f.charAt(0).toUpperCase() + f.slice(1)}
+          </button>
+        ))}
+      </div>
+
+      {/* transactions */}
+      {mounted && (
+        <div className="flex flex-col gap-3">
+          {visible.map((t) => (
+            <TransactionRow key={t.id} transaction={t} />
+          ))}
+        </div>
+      )}
+      {/* load more */}
+      {visibleCount < filtered.length && (
+        <button
+          onClick={() => setVisibleCount((v) => v + 5)}
+          className="text-sm text-zinc-400 mx-auto"
+        >
+          Load More ↓
+        </button>
+      )}
+    </div>
+  );
 }
