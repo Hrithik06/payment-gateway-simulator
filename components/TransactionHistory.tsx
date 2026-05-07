@@ -2,7 +2,7 @@
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useState, useSyncExternalStore } from "react";
 import TransactionRow from "./TransactionRow";
-import { MoveLeft } from "lucide-react";
+import { BrushCleaning, MoveLeft } from "lucide-react";
 import Link from "next/link";
 import { resetPayment } from "@/store/paymentSlice";
 import { useRouter } from "next/navigation";
@@ -70,7 +70,13 @@ export default function TransactionHistory() {
           </button>
         ))}
       </div>
-
+      {!history.length && (
+        <div className="flex flex-col items-center gap-2 text-zinc-500 p-10">
+          <BrushCleaning size={72} />
+          <p className="text-lg font-medium text-zinc-400">Nothing here yet.</p>
+          <p className="text-sm">All your transactions will show up here.</p>
+        </div>
+      )}
       {/* transactions */}
       {mounted && (
         <div className="flex flex-col gap-3">

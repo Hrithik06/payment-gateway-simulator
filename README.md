@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PayCore — Payment Gateway Simulator
+
+A Payment Gateway UI built with Next.js App Router and TypeScript. Simulates a full payment lifecycle without any third-party payment SDKs.
+
+## Tech Stack
+
+- Next.js 16 (App Router)
+- TypeScript
+- Tailwind CSS
+- Redux Toolkit
+- React Hook Form
+- Lucide React
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+- Node.js 20+
+- pnpm/npm
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### Installation
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+git clone https://github.com/Hrithik06/paycore.git
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+cd paycore
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+##### Install Packages
+`pnpm install` or `npm install`
 
-## Learn More
+##### Dev server
+`pnpm dev` or `npm run dev`
 
-To learn more about Next.js, take a look at the following resources:
+##### Open http://localhost:3000
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Features
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Payment form with real-time field validation
+- Card type detection (Visa, Mastercard, Amex) with live card preview
+- Full payment lifecycle — Idle, Processing, Success, Failed, Timeout, Locked
+- Mock API route simulating 60% success, 25% failure, 15% timeout
+- AbortController frontend timeout at 6 seconds
+- Retry logic — max 3 attempts per transaction with idempotent transaction IDs
+- Transaction history persisted in localStorage with status filtering
+- Accessible — aria-describedby on all inputs, focus management on state transitions
+- Responsive — 375px mobile and 1280px desktop
 
-## Deploy on Vercel
+## Assumptions
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Payment status is not persisted across page refreshes — real payment gateways redirect users after completion
+- Transaction history shows last 5 entries by default with Load More pagination
+- Timeout and Failed states share the same screen with different copy and accent colours
+- Amex cards use 4-6-5 formatting (15 digits) while all other cards use 4-4-4-4 (16 digits)
+- Currency selector changes display symbol only — no conversion between INR and USD
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## What I'd Improve Given More Time
+
+- Add animations using Framer Motion on state transitions
+- Add receipt download as PDF on success screen
+- Write unit tests for validation and formatting utils
+- Replace localStorage with a proper backend and database
+- Add card flip animation on the live preview
