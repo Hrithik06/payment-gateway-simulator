@@ -11,7 +11,6 @@ import {
 
 import {
   cardHolderNameRules,
-  cardNumberRules,
   amountRules,
   currencyRules,
   expiryDateRules,
