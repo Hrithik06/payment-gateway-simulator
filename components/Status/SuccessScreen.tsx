@@ -37,18 +37,19 @@ export default function SuccessScreen() {
           </div>
         </div>
         <p className="text-sm text-zinc-400">Paid with •••• {lastFourDigits}</p>
+
         <button
-          className="cursor-pointer w-11/12 rounded-lg bg-blue-300/90 py-3 text-white flex items-center justify-center text-sm lg:text-base"
+          className="cursor-pointer w-11/12 rounded-lg bg-green-600 hover:bg-green-500 py-3 text-white flex items-center justify-center text-sm lg:text-base"
+          onClick={() => dispatch(resetPayment())}
+        >
+          Make a New Payment
+        </button>
+        <button
+          className="cursor-pointer w-11/12 rounded-lg bg-blue-600 hover:bg-blue-500 text-white flex items-center justify-center text-sm lg:text-base"
           onClick={() => router.push("/history")}
         >
           <span>View Transaction</span>
           <ScrollText size={16} />
-        </button>
-        <button
-          className="cursor-pointer w-11/12 rounded-lg bg-green-300/90 py-3 text-white flex items-center justify-center text-sm lg:text-base"
-          onClick={() => dispatch(resetPayment())}
-        >
-          Make a New Payment
         </button>
       </div>
     </div>

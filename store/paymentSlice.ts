@@ -75,6 +75,7 @@ const paymentSlice = createSlice({
       if (!state.transactionId) return;
       const { amount, currency } = action.payload;
       state.status = "timeout";
+      state.reason = "Request timed out";
       state.attempt += 1;
       if (state.attempt >= 3) state.status = "locked";
       const transaction: Transaction = {
@@ -89,7 +90,7 @@ const paymentSlice = createSlice({
 
       localStorage.setItem("transactions", JSON.stringify(state.history));
     },
-    retryPayment(state) {
+    retryPaymentAction(state) {
       state.status = "processing";
     },
     resetPayment(state) {
@@ -106,7 +107,7 @@ export const {
   paymentFailure,
   paymentTimeout,
   submitPayment,
-  retryPayment,
+  retryPaymentAction,
   resetPayment,
 } = paymentSlice.actions;
 export default paymentSlice.reducer;

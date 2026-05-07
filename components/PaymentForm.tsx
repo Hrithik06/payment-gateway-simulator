@@ -9,7 +9,7 @@ import CardPreview from "./CardPreview";
 import { getCardType } from "@/utils/cardType";
 import { usePaymentFlow } from "@/hooks/usePaymentFlow";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useAppSelector } from "@/store/hooks";
 
 export default function PaymentForm() {

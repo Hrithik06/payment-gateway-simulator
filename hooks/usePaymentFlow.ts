@@ -1,16 +1,19 @@
 "use client";
-import { useAppDispatch } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   paymentFailure,
   paymentSuccess,
   paymentTimeout,
   submitPayment,
+  retryPaymentAction,
 } from "@/store/paymentSlice";
 import { PaymentFormInputs } from "@/types";
 
 export const usePaymentFlow = () => {
   const dispatch = useAppDispatch();
-
+  const { transactionId, currency, amount } = useAppSelector(
+    (store) => store.payment,
+  );
   const processPayment = async (data: PaymentFormInputs) => {
     const transactionId = crypto.randomUUID();
     const lastFourDigits = data.cardNumber.replace(/\s/g, "").slice(-4);
@@ -23,7 +26,12 @@ export const usePaymentFlow = () => {
         amount: data.amount,
       }),
     );
-    runPayment(transactionId, data.amount, data.currency);
+    await runPayment(transactionId, data.amount, data.currency);
+  };
+  const retryPayment = async () => {
+    if (!transactionId || !amount || !currency) return;
+    dispatch(retryPaymentAction());
+    await runPayment(transactionId, currency, amount);
   };
   const runPayment = async (
     txnId: string,
@@ -62,5 +70,5 @@ export const usePaymentFlow = () => {
       clearTimeout(timerId);
     }
   };
-  return { processPayment };
+  return { processPayment, retryPayment };
 };
