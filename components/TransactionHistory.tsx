@@ -60,7 +60,7 @@ export default function TransactionHistory() {
               setFilter(f);
               setVisibleCount(5);
             }}
-            className={`px-4 py-1.5 rounded-full text-sm capitalize ${
+            className={`px-4 py-1.5 rounded-full text-sm capitalize cursor-pointer ${
               filter === f
                 ? "bg-blue-600 text-white"
                 : "bg-zinc-800 text-zinc-400"
@@ -80,7 +80,7 @@ export default function TransactionHistory() {
         </div>
       )}
       {/* load more */}
-      {visibleCount < filtered.length && (
+      {mounted && visibleCount < filtered.length && (
         <button
           onClick={() => setVisibleCount((v) => v + 5)}
           className="text-sm text-zinc-400 mx-auto"

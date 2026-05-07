@@ -7,12 +7,19 @@ export default function Header() {
         <h1 className="text-xl font-semibold tracking-widest">PAYCORE</h1>
       </div>
       <span className="flex gap-4">
-        <button aria-label="Help">
-          <BadgeQuestionMark />
-        </button>
-        <button aria-label="Secure connection">
-          <LockKeyhole />
-        </button>
+        <a href="#">
+          <button className="hover:cursor-pointer" aria-label="Help">
+            <BadgeQuestionMark />
+          </button>
+        </a>
+        <a href="#">
+          <button
+            className="hover:cursor-pointer"
+            aria-label="Secure connection"
+          >
+            <LockKeyhole />
+          </button>
+        </a>
       </span>
     </>
   );

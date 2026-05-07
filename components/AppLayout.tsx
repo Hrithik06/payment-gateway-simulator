@@ -8,7 +8,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         <Header />
       </header>
       <main className="flex-1 px-6 py-10">{children}</main>
-      <footer className="w-full border-t border-zinc-800 px-16 py-6 flex justify-between">
+      <footer className="w-full border-t border-zinc-800 px-6 lg:px-16 py-6 flex justify-between text-sm flex-col md:flex-row gap-6">
         <Footer />
       </footer>
     </div>
