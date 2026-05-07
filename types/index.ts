@@ -27,6 +27,8 @@ export type PaymentFormInputs = {
 
 export interface PaymentState {
   transactionId: string | null;
+  currency: string | null;
+  amount: string | null;
   lastFourDigits: string | null;
   status: PaymentStatus;
   attempt: number;
