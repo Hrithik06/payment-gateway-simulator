@@ -8,6 +8,7 @@ import { useAppSelector } from "@/store/hooks";
 import { CircleAlert, RotateCcw, ScrollText, ClockAlert } from "lucide-react";
 
 import { useRouter } from "next/navigation";
+import { useEffect, useRef } from "react";
 
 export default function FailureScreen({ variant }: FailureScreenProps) {
   const { retryPayment } = usePaymentFlow();
@@ -18,6 +19,12 @@ export default function FailureScreen({ variant }: FailureScreenProps) {
   const handleRetry = async () => {
     await retryPayment();
   };
+
+  //For Focus Management
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  useEffect(() => {
+    headingRef.current?.focus();
+  }, []);
   return (
     <div className="flex items-center justify-center px-6 py-10 ">
       <div
@@ -33,7 +40,11 @@ export default function FailureScreen({ variant }: FailureScreenProps) {
             <ClockAlert size={40} className="text-amber-500" />
           )}
         </div>
-        <h2 className="text-xl lg:text-2xl font-semibold text-white">
+        <h2
+          className="text-xl lg:text-2xl font-semibold text-white"
+          ref={headingRef}
+          tabIndex={-1}
+        >
           Payment <span className="capitalize">{variant}</span>
         </h2>
         <p className="text-xs lg:text-sm text-red-400">{reason}</p>

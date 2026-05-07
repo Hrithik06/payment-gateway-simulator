@@ -15,6 +15,7 @@ import { useAppSelector } from "@/store/hooks";
 export default function PaymentForm() {
   const form = useForm<PaymentFormInputs>({
     mode: "onChange",
+    shouldFocusError: true,
   });
 
   const { processPayment } = usePaymentFlow();

@@ -1,15 +1,25 @@
 "use client";
+import { useEffect, useRef } from "react";
 
 import { LockKeyhole } from "lucide-react";
 
 export default function ProcessingScreen() {
+  //For Focus Management
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  useEffect(() => {
+    headingRef.current?.focus();
+  }, []);
   return (
     <div className="flex flex-1 items-center justify-center px-6 py-10">
       <div className="w-full max-w-md rounded-2xl border border-zinc-800 bg-zinc-900 p-10 text-center">
         {/*spinner*/}
         <div className="mx-auto mb-6 h-12 w-12 animate-spin rounded-full border-4 border-zinc-700 border-t-white" />
 
-        <h1 className="mb-3 text-2xl font-semibold text-white">
+        <h1
+          className="mb-3 text-2xl font-semibold text-white"
+          ref={headingRef}
+          tabIndex={-1}
+        >
           Processing Payment
         </h1>
 

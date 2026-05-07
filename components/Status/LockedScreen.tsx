@@ -1,4 +1,5 @@
 "use client";
+import { useEffect, useRef } from "react";
 
 import { useAppDispatch } from "@/store/hooks";
 import { resetPayment } from "@/store/paymentSlice";
@@ -9,6 +10,12 @@ import { useRouter } from "next/navigation";
 export default function LockedScreen() {
   const router = useRouter();
   const dispatch = useAppDispatch();
+
+  //For Focus Management
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  useEffect(() => {
+    headingRef.current?.focus();
+  }, []);
   return (
     <div className="flex items-center justify-center px-6 py-10 ">
       <div
@@ -17,7 +24,11 @@ export default function LockedScreen() {
         <div className={`p-6 rounded-3xl bg-red-300/30`}>
           <CircleX size={40} className="text-red-500" />
         </div>
-        <h2 className="text-xl lg:text-2xl font-semibold text-white">
+        <h2
+          className="text-xl lg:text-2xl font-semibold text-white"
+          ref={headingRef}
+          tabIndex={-1}
+        >
           Transaction Declined
         </h2>
         <p className="text-xs lg:text-sm text-zinc-500 text-center w-11/12">
